@@ -72,9 +72,15 @@ sub process {
 				# first char is a /, which gives an empty element
 				my @paths = split(/\//, substr($urlfile, 1));
 
-				open(IN, "$srcfile");
-				my $content = join(" ", <IN>);
-				close(IN);
+				my $content;
+				if($outputcmd) {
+					$content = `$outputcmd "$srcfile"` if $outputcmd;
+				}
+				else {
+					open(IN, "$srcfile");
+					$content = join(" ", <IN>);
+					close(IN);
+				}
 
 				# generation time/date
 				my $mtime = strftime("%d %b %y", localtime((stat($srcfile))[9]));
