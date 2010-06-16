@@ -66,6 +66,7 @@ sub process {
 				foreach(sort directoryfirst_sort <$dir/*>) {
 					$_ .= "/" if (-d $_);
 					$_ =~ s/$dir\///;
+					$_ =~ s/$srcext$/$destext/;
 					push(@links, $_);
 				}
 
