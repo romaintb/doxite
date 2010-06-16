@@ -106,7 +106,7 @@ sub process {
 
 sub version {
 	print <<EOF;
-doxite : v0.3b
+doxite : v0.3
 EOF
 
 	exit 0;
