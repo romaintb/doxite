@@ -22,14 +22,17 @@ use File::Copy;
 use POSIX qw(strftime);
 
 
-my ($templatefile, $srcdir, $help, $version, $destdir) = ("template");
+my ($templatefile, $srcext, $destext, $outputcmd, $srcdir, $help, $version, $destdir) = ("template", "html", "html");
 
 GetOptions(
-	's|source-dir=s' => \$srcdir,
-	'd|dest-dir=s'   => \$destdir,
-	't|template=s'   => \$templatefile,
-	'v|version'      => \$version,
-	'h|help'         => \$help,
+	'sd|source-dir=s' => \$srcdir,
+	'dd|dest-dir=s'   => \$destdir,
+	'se|source-ext=s' => \$srcext,
+	'de|dest-ext=s'   => \$destext,
+	'o|output-cmd=s'  => \$outputcmd,
+	't|template=s'    => \$templatefile,
+	'v|version'       => \$version,
+	'h|help'          => \$help,
 );
 
 version() if $version;
@@ -50,14 +53,16 @@ sub directoryfirst_sort {
 sub process {
 	foreach my $dir (@tobeprocessed) {
 		foreach my $srcfile (sort directoryfirst_sort <$dir/*>) {
-			my $destfile = my $urlfile = $srcfile;
+			(my $urlfile = $srcfile) =~ s/\.$srcext$/\.$destext/;
+			my $destfile = $urlfile;
 			$destfile =~ s/$srcdir/$destdir/;
 			$urlfile =~ s/$srcdir//;
+			#print "srcdir : ".$srcdir."\ndestdir : ".$destdir."\nsrcfile : ".$srcfile."\nurlfile : ".$urlfile."\ndestfile : ".$destfile."\n\n";
 
 			push(@tobeprocessed, $srcfile) and next if( -d $srcfile );
-			copy($srcfile, $destfile) and next if(  $srcfile !~ /\.html$/ );
+			copy($srcfile, $destfile) and next if(  $srcfile !~ /\.$srcext$/ );
 
-			if( $srcfile =~ /\.html$/ ) {
+			if( $srcfile =~ /\.$srcext$/ ) {
 				my @links;
 				foreach(sort directoryfirst_sort <$dir/*>) {
 					$_ .= "/" if (-d $_);
@@ -84,7 +89,7 @@ sub process {
 					mtime => $mtime,
 				};
 				my $template = Template->new();
-				$template->process("$templatefile", $data, "$destfile");
+				$template->process($templatefile, $data, "$destfile");
 			}
 		}
 	}
@@ -95,7 +100,7 @@ sub process {
 
 sub version {
 	print <<EOF;
-doxite : v0.2
+doxite : v0.3b
 EOF
 
 	exit 0;
@@ -107,10 +112,13 @@ sub usage {
 Usage: doxite [options]
 
 Options:
- -s, --source-dir       Directory to process
- -d, --dest-dir         Destination directory
- -t, --template         Template file
-                        (default is source-dir/template)
+ -sd, --source-dir       Directory to process
+ -dd, --dest-dir         Destination directory
+ -se, --source-ext       Extension of sources files (default : html, optional)
+ -de, --dest-ext         Extension of destination files (default : html, optional)
+ -o,  --output-cmd       Command to output files (optional)
+ -t,  --template         Template file (default : source-dir/template, optional)
+
  -h, --help             This help
  -v, --version          Display version number
 EOF
