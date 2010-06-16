@@ -85,7 +85,7 @@ sub process {
 
 sub version {
 	print <<EOF;
-html2website : v0.2
+doxite : v0.2
 EOF
 
 	exit 0;
@@ -94,7 +94,7 @@ EOF
 
 sub usage {
 	print STDERR <<EOF;
-Usage: html2website [options]
+Usage: doxite [options]
 
 Options:
  -s, --source-dir       Directory to process
