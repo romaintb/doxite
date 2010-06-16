@@ -88,8 +88,9 @@ sub process {
 					content => $content,
 					mtime => $mtime,
 				};
-				my $template = Template->new();
-				$template->process($templatefile, $data, "$destfile");
+
+				my $template = Template->new({INCLUDE_PATH => "$srcdir"});
+				$template->process("$templatefile", $data, "$destfile");
 			}
 		}
 	}
@@ -117,7 +118,7 @@ Options:
  -se, --source-ext       Extension of sources files (default : html, optional)
  -de, --dest-ext         Extension of destination files (default : html, optional)
  -o,  --output-cmd       Command to output files (optional)
- -t,  --template         Template file (default : source-dir/template, optional)
+ -t,  --template         Template file (relative to your source-dir, default : 'template', optional)
 
  -h, --help             This help
  -v, --version          Display version number
