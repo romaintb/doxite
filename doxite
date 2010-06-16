@@ -57,7 +57,6 @@ sub process {
 			my $destfile = $urlfile;
 			$destfile =~ s/$srcdir/$destdir/;
 			$urlfile =~ s/$srcdir//;
-			#print "srcdir : ".$srcdir."\ndestdir : ".$destdir."\nsrcfile : ".$srcfile."\nurlfile : ".$urlfile."\ndestfile : ".$destfile."\n\n";
 
 			push(@tobeprocessed, $srcfile) and next if( -d $srcfile );
 			copy($srcfile, $destfile) and next if(  $srcfile !~ /\.$srcext$/ );
