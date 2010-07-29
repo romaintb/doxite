@@ -75,7 +75,7 @@ sub process {
 
 				my $content;
 				if($outputcmd) {
-					$content = `$outputcmd "$srcfile"` if $outputcmd;
+					$content = `$outputcmd "$srcfile"`;
 				}
 				else {
 					open(IN, "$srcfile");
